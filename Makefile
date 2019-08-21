@@ -34,7 +34,7 @@ renewcert:
 	if [ -z "$(docker image ls | grep renewcert)" ]; then \
 		docker build --rm -t renewcert certbot/; \
 	fi; \
-	docker run --rm -v $(pwd)/../certs:/root/certs \
+	docker run --rm -v $(shell pwd)/../certs:/root/certs \
 		-e REGRUDNS_EMAIL=$(REGRUDNS_EMAIL) -e REGRUDNS_USER=$(REGRUDNS_USER) \
 		-e REGRUDNS_PASS=$(REGRUDNS_PASS) -e REGRUDNS_DOMAIN=$(REGRUDNS_DOMAIN) \
 			renewcert /root/renew_cert.sh
