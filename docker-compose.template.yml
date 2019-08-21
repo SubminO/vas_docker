@@ -1,0 +1,75 @@
+version: '3'
+services:
+  vas:
+    build: ./nginx
+    container_name: nginx
+    hostname: vas
+    domainname: ${DOMAIN}
+    restart: always
+    ports:
+      - "${HTTPPORT}:80"
+      - "${HTTPSPORT}:443"
+    command: /opt/runfiles/run_nginx.sh
+    volumes:
+      - ./runfiles:/opt/runfiles:ro
+    environment:
+      MODE: ${MODE}
+    tty: true
+    networks:
+      - vas
+
+  translator:
+    build: ./translator
+    command: /opt/runfiles/run_translator.sh
+    container_name: translator
+    hostname: translator
+    domainname: ${DOMAIN}
+    restart: always
+    ports:
+      - "${WIALON_IN_PORT}:3000"
+    volumes:
+      - ./runfiles:/opt/runfiles:ro
+      - ../translator/translator:/opt/translator
+    environment:
+      LANG: en_US.UTF-8
+      LANGUAGE: en_US:en
+      HTTPSPORT: ${HTTPSPORT}
+      JWT_ENABLED: ${JWT_ENABLED}
+    networks:
+      - vas
+    tty: true
+    depends_on:
+      - pgdb
+      - redis
+
+  redis:
+    image: redis:5.0.5-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - 127.0.0.1:6399:6379
+    networks:
+      - vas
+
+  pgdb:
+    image: postgres
+    container_name: pgdb
+    hostname: pgdb
+    domainname: ${DOMAIN}
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
+    volumes:
+      - vas_pgdata:/var/lib/postgresql
+    networks:
+      - vas
+
+networks:
+  vas:
+    driver: bridge
+
+volumes:
+  vas_pgdata:

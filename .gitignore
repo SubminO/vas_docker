@@ -1,0 +1,13 @@
+# configurations
+.env
+docker-compose.yml
+common.yml
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
