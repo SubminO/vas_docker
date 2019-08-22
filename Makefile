@@ -1,7 +1,7 @@
 # достаем и экпортируем нужные ENV VARS
 include .env
 export NETWORK REGRUDNS_EMAIL REGRUDNS_USER
-export REGRUDNS_DOMAIN REGRUDNS_PASS
+export REGRUDNS_DOMAIN REGRUDNS_PASS REGRUDNS_IDLE
 
 all: docker-compose
 
@@ -37,7 +37,7 @@ renewcert:
 	docker run --rm -v $(shell pwd)/../certs:/root/certs \
 		-e REGRUDNS_EMAIL=$(REGRUDNS_EMAIL) -e REGRUDNS_USER=$(REGRUDNS_USER) \
 		-e REGRUDNS_PASS=$(REGRUDNS_PASS) -e REGRUDNS_DOMAIN=$(REGRUDNS_DOMAIN) \
-			renewcert /root/renew_cert.sh
+		-e REGRUDNS_IDLE=$(REGRUDNS_IDLE) renewcert /root/renew_cert.sh
 
 vas-docker-pull:
 	if [ -d "./.git" ]; then \
