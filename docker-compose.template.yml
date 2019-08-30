@@ -12,6 +12,8 @@ services:
     command: /opt/runfiles/run_nginx.sh
     volumes:
       - ./runfiles:/opt/runfiles:ro
+      - ./nginx/etc:/opt/nginx:ro
+      - ../certs:/opt/certs:ro
     environment:
       MODE: ${MODE}
     tty: true
