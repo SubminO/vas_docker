@@ -26,21 +26,23 @@ services:
     domainname: ${DOMAIN}
     restart: always
     ports:
-      - "${WIALON_IN_PORT}:3000"
+      - "${EGTS_PORT}:${EGTS_PORT}"
+      - "${WIALON_PORT}:${WIALON_PORT}"
+    command: /opt/runfiles/run_translator.sh
     volumes:
       - ./runfiles:/opt/runfiles:ro
       - ../translator/translator:/opt/translator
     environment:
-      LANG: en_US.UTF-8
-      LANGUAGE: en_US:en
-      HTTPSPORT: ${HTTPSPORT}
-      JWT_ENABLED: ${JWT_ENABLED}
+      TRANS_ADDR: ${TRANS_ADDR}
+      EGTS_PORT: ${EGTS_PORT}
+      WIALON_PORT: ${WIALON_PORT}
+      PROTOCOLS: ${PROTOCOLS}
+      WS_ADDR: ${WS_ADDR}
+      WS_PORT: ${WS_PORT}
+      MODE: ${MODE}
     networks:
       - vas
     tty: true
-    depends_on:
-      - pgdb
-      - redis
 
   redis:
     image: redis:5.0.5-alpine
