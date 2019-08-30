@@ -28,7 +28,6 @@ services:
     ports:
       - "${EGTS_PORT}:${EGTS_PORT}"
       - "${WIALON_PORT}:${WIALON_PORT}"
-    command: /opt/runfiles/run_translator.sh
     volumes:
       - ./runfiles:/opt/runfiles:ro
       - ../translator/translator:/opt/translator

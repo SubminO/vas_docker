@@ -1,19 +1,18 @@
-#!/bin/bash
+#!/bin/sh
 
-DEBUG=1
+DEBUG='-d'
 
-if [ $MODE -eq "production" ]; then
-      DEBUG=0
+if [ "x$MODE" == "xproduction" ]
+then
+      DEBUG=''
 fi
 
 PROTOPORTS=""
-for PROTOPORT in $PROTOCOLS; do
+for PROTOPORT in $PROTOCOLS
+do
     PROTOPORTS="$PROTOPORTS -r $(echo $PROTOPORT | sed  's/:/ /')"
 done
 
 cd /opt/translator
 
-python ./run.py $PROTOPORTS --wsaddr $WS_ADDR \
-    --wsport $WS_PORT --addr $TRANS_ADDR -d $DEBUG
-
-
+python ./run.py $PROTOPORTS -w $WS_ADDR -p $WS_PORT -l $TRANS_ADDR $DEBUG
