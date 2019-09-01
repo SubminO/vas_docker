@@ -1,10 +1,8 @@
 #!/bin/sh
 
-DEBUG='-d'
-
-if [ "x$MODE" == "xproduction" ]
+if [ -z "$MODE" ]
 then
-      DEBUG=''
+    MODE="development"
 fi
 
 PROTOPORTS=""
@@ -15,4 +13,4 @@ done
 
 cd /opt/translator
 
-python ./run.py $PROTOPORTS -w $WS_ADDR -p $WS_PORT -l $TRANS_ADDR $DEBUG
+python ./run.py $PROTOPORTS -w $WS_ADDR -p $WS_PORT -l $TRANS_ADDR -m $MODE

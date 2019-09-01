@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -d /etc/ssl ]
+then
+    mkdir /etc/ssl
+fi
+
 cp -R /opt/certs/* /etc/ssl/
 cp -R /opt/nginx/* /etc/
 

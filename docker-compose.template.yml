@@ -2,7 +2,7 @@ version: '3'
 services:
   vas:
     build: ./nginx
-    container_name: nginx
+    container_name: vas
     hostname: vas
     domainname: ${DOMAIN}
     restart: always
@@ -19,6 +19,8 @@ services:
     tty: true
     networks:
       - vas
+    depends_on:
+      - translator
 
   translator:
     build: ./translator
