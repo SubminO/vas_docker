@@ -1,6 +1,6 @@
 # достаем и экпортируем нужные ENV VARS
 include .env
-export NETWORK REGRUDNS_EMAIL REGRUDNS_USER
+export PROJECT_NAME NETWORK REGRUDNS_EMAIL REGRUDNS_USER
 export REGRUDNS_DOMAIN REGRUDNS_PASS REGRUDNS_IDLE
 
 all: docker-compose
@@ -22,7 +22,7 @@ docker-compose:
 	  semantic="consistent"; \
 	fi; \
 	export semantic; \
-	envsubst '$${semantic}' < docker-compose.template.yml > common.yml
+	envsubst '$${semantic}:$${PROJECT_NAME}' < docker-compose.template.yml > common.yml
 	docker run --rm -i -v $$(pwd):/opt python:3-alpine sh \
 	-c 'pip install --upgrade pip; pip install ruamel.yaml; cd /opt; /opt/build.py'
 
