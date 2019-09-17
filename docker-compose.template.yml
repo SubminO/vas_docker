@@ -157,6 +157,35 @@ services:
     networks:
       - vas
 
+  beholder:
+    build: ./beholder
+    command: /opt/runfiles/run_beholder.sh
+    container_name: ${PROJECT_NAME}-beholder
+    hostname: beholder
+    domainname: ${DOMAIN}
+    restart: always
+    volumes:
+      - ./runfiles:/opt/runfiles:ro
+      - ../beholder/src:/opt/beholder
+    environment:
+      WS_ADDR: ${WS_ADDR}
+      WS_PORT: ${WS_PORT}
+      DBS_HOST: pgdb
+      DBS_PORT: ${DBS_PORT}
+      DBS_USER: ${POSTGRES_USER}
+      DBS_PASS: ${POSTGRES_PASSWORD}
+      DBS_DBNAME: ${POSTGRES_DB}
+      RMQ_HOST: rabbitmq
+      RMQ_PORT: ${RMQ_PORT}
+      RMQ_USER: ${RMQ_USER}
+      RMQ_PASS: ${RMQ_PASS}
+    networks:
+      - vas
+    tty: true
+    depends_on:
+#      - pgdb
+      - rabbitmq
+
 networks:
   vas:
     driver: bridge
