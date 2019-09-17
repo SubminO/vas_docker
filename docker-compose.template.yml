@@ -7,7 +7,7 @@ services:
     domainname: ${DOMAIN}
     restart: always
     ports:
-      - "${HTTPPORT}:80"
+#      - "${HTTPPORT}:80"
       - "${HTTPSPORT}:443"
     command: /opt/runfiles/run_nginx.sh
     volumes:
@@ -24,15 +24,23 @@ services:
 
   admin:
     build: ./admin
-    command: /opt/runfiles/run_admin-panel.sh
+#    command: /opt/runfiles/run_admin-panel.sh
     container_name: ${PROJECT_NAME}-admin
     hostname: admin
     domainname: ${DOMAIN}
     restart: always
+    ports:
+      - 127.0.0.1:8013:8000
     volumes:
       - ./runfiles:/opt/runfiles:ro
-      - ../admin/translator:/opt/www
+      - ../VAS:/home/vas
     environment:
+      DEBUG_VALUE: 'TRUE'
+      DATABASE_BACKENDS_POSTGRES: 'TRUE'
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: ${DBS_HOST}
+      DB_NAME: ${POSTGRES_DB}
       MODE: ${MODE}
     networks:
       - vas
@@ -76,7 +84,7 @@ services:
       - ./runfiles:/opt/runfiles:ro
       - ../keeper/keeper:/opt/keeper
     environment:
-      WS_ADDR: ${WS_ADDR}
+      WS_ADDR: translator
       WS_PORT: ${WS_PORT}
 #      GDBACKEND: ${GDBACKEND}
       GDB_HOST: ${GDB_HOST}
@@ -95,9 +103,9 @@ services:
       DBS_PASS: ${POSTGRES_PASSWORD}
       DBS_DBNAME: ${POSTGRES_DB}
       RMQ_HOST: ${RMQ_HOST}
-#      RMQ_PORT: ${RMQ_PORT}
-#      RMQ_USER: ${RMQ_USER}
-#      RMQ_PASS: ${RMQ_PASS}
+      RMQ_PORT: ${RMQ_PORT}
+      RMQ_USER: ${RMQ_USER}
+      RMQ_PASS: ${RMQ_PASS}
     networks:
       - vas
     tty: true
@@ -135,19 +143,19 @@ services:
       - vas
 
   rabbitmq:
-    image: rabbitmq:3
+    image: rabbitmq:3-management
     container_name: ${PROJECT_NAME}-rabbitmq
     hostname: rmq
     domainname: ${DOMAIN}
     restart: always
     environment:
-      RABBITMQ_DEFAULT_USER:
-      RABBITMQ_DEFAULT_PASS:
+      RABBITMQ_DEFAULT_USER: ${RMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RMQ_PASS}
     ports:
       - 127.0.0.1:${RMQ_PORT}:5672
+      - ${RMQ_MONITOR_PORT}:15672
     networks:
       - vas
-
 
 networks:
   vas:
