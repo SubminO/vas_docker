@@ -55,6 +55,20 @@ translator-pull:
 		GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone git@github.com:SubminO/translator.git ../translator; \
 	fi
 
+django-migrate:
+	docker build --rm --no-cache -t target-django-migrate ./admin; \
+	docker run --rm --env-file $(shell pwd)/.env -it -v $(shell pwd)/../vas:/opt/vas \
+	target-django-migrate; \
+	python manage.py migrate; \
+	docker image rm -f target-django-migrate
+
+build-static:
+	rm -rf ../static/* && docker build --rm --no-cache -t target-build-static ./admin; \
+	docker run --rm --env-file $(shell pwd)/.env -it -v $(shell pwd)/../vas:/opt/vas \
+	-v $(shell pwd)/../static/vas-admin:/opt/vas/www/assets target-build-static; \
+	python manage.py collectstatic --noinput; \
+	docker image rm -f target-build-static
+
 start: run
 
 run:

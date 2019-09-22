@@ -7,13 +7,15 @@ services:
     domainname: ${DOMAIN}
     restart: always
     ports:
-#      - "${HTTPPORT}:80"
+      - "${HTTPPORT}:80"
       - "${HTTPSPORT}:443"
     command: /opt/runfiles/run_nginx.sh
     volumes:
       - ./runfiles:/opt/runfiles:ro
       - ./nginx/etc:/opt/nginx:ro
       - ../certs:/opt/certs:ro
+      - ../static:/var/www/static:ro
+      - ../media:/var/www/media:rw
     environment:
       MODE: ${MODE}
     tty: true
@@ -24,29 +26,29 @@ services:
 
   admin:
     build: ./admin
-#    command: /opt/runfiles/run_admin-panel.sh
+    command: ../boot.sh
     container_name: ${PROJECT_NAME}-admin
     hostname: admin
     domainname: ${DOMAIN}
     restart: always
     ports:
-      - 127.0.0.1:8013:8000
+      - 127.0.0.1:8083:8000
     volumes:
-      - ./runfiles:/opt/runfiles:ro
-      - ../VAS:/home/vas
+      - ../vas:/opt/vas:ro
     environment:
-      DEBUG_VALUE: 'TRUE'
-      DATABASE_BACKENDS_POSTGRES: 'TRUE'
+      DEBUG: ${DEBUG}
+      MODE: ${MODE}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_HOST: ${DBS_HOST}
       DB_NAME: ${POSTGRES_DB}
-      MODE: ${MODE}
     networks:
       - vas
     tty: true
     depends_on:
       - pgdb
+      - translator
+      - beholder
 
   translator:
     build: ./translator
@@ -185,6 +187,7 @@ services:
     depends_on:
 #      - pgdb
       - rabbitmq
+      - keeper
 
 networks:
   vas:
