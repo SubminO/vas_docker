@@ -1,0 +1,1 @@
+../sites-available/vas-admin.submin.ru
