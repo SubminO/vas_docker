@@ -1,5 +1,5 @@
 Babel==2.7.0
-Django==2.2.2
+Django>=2.2.4
 django-appconf==1.0.3
 django-cors-headers==3.0.2
 django-crispy-forms==1.7.2
