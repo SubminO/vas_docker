@@ -6,7 +6,7 @@ django-crispy-forms==1.7.2
 django-filter==2.1.0
 django-phonenumber-field==3.0.1
 django-select2==7.1.0
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 phonenumbers==8.10.16
 pytz==2019.2
 six==1.12.0
